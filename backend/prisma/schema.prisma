@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -16,10 +17,12 @@ datasource db {
 model User {
   serial_id Int @default(autoincrement())
   unique_id String @id @default(uuid())
-  username String
-  email String
+  username String @unique
+  email String @unique
   password String
   post Post[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt @default(now())
 }
 
 model Post {
@@ -29,4 +32,6 @@ model Post {
   body String
   user User @relation(fields: [user_id], references: [unique_id])
   user_id String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt @default(now())
 }
