@@ -6,7 +6,7 @@ export const signupAuth: MiddlewareHandler = createMiddleware(async (c: Context,
     const object = z.object({
         username: z.string().min(5),
         email: z.string().email(),
-        password: z.string()
+        password: z.string().min(8)
     })
     
     const response = object.safeParse(await c.req.json())

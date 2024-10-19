@@ -5,7 +5,7 @@ import { z } from "zod"
 export const signinAuth: MiddlewareHandler = createMiddleware(async (c: Context, next: Next) => {
     const object = z.object({
         username: z.string().min(5),
-        password: z.string()
+        password: z.string().min(8)
     })
     
     const response = object.safeParse(await c.req.json())
