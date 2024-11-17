@@ -57,6 +57,7 @@ export async function action({ request }: LoaderFunctionArgs) {
         headers: {
             'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify(authData)
     })
 

@@ -1,15 +1,25 @@
 import { useRouteError } from "react-router-dom"
 import MainNavigation from "./MainNavigation";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
+ 
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
 
 interface ErrorType {
-    msg: string,
-    status: number
+    data: {
+        message: string,
+    },
+    internal: boolean,
+    status: number,
+    statusText: string
 }
 
 export default function Error() {
     const error: ErrorType = useRouteError()
     console.log(error);
-    let title = 'An error occurred!';
     let message = 'Something went wrong!';
 
     if (error.status === 500) {
@@ -17,13 +27,18 @@ export default function Error() {
     }
 
     if (error.status === 404) {
-        title = 'Not found!';
         message = 'Could not find resource or page.';
     }
     return (
         <>
             <MainNavigation />
-            <h1>Error page</h1>
+            <Alert variant="destructive" className="max-w-screen-sm md:max-w-screen-md mx-auto min-h-fit">
+                <ExclamationTriangleIcon className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>
+                    {message}
+                </AlertDescription>
+            </Alert>
         </>
     )
 }

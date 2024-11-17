@@ -1,15 +1,15 @@
 import { PrismaClient } from '@prisma/client'
 import { PrismaNeon } from '@prisma/adapter-neon'
 import { Pool } from '@neondatabase/serverless'
-import { Context, ExecutionContext, Hono } from 'hono'
-import { sign } from 'hono/jwt'
-import bcryptjs from "bcryptjs";
+import { Context, Hono } from 'hono'
 import { signupAuth } from './middlewares/signupAuth'
 import { signinAuth } from './middlewares/signinAuth'
 import { tokenAuth } from './middlewares/tokenAuth'
 import { inputValidation } from './middlewares/inputValidation'
 import { cors } from "hono/cors"
 import { createToken } from './util/jwt'
+import { deleteCookie, setCookie } from "hono/cookie"
+import bcryptjs from "bcryptjs";
 
 type Bindings = {
 	JWT_SECRET: string,
@@ -33,11 +33,16 @@ const pool = new Pool({ connectionString })
 const adapter = new PrismaNeon(pool)
 const prisma = new PrismaClient({ adapter })
 
-app.use('/api/*', cors())
 
+app.use('/api/*', cors({
+	origin: 'http://localhost:5173',
+	credentials: true,
+}))
+
+app.use('/api/v1/blogs/delete', tokenAuth)
 app.use('/api/v1/blog/*', tokenAuth, inputValidation)
 
-app.get('/api/v1/blogs', async (c) => {
+app.get('/api/v1/blogs', async (c: Context) => {
 
 	try {    
 		const db_response = await prisma.post.findMany({})
@@ -46,11 +51,11 @@ app.get('/api/v1/blogs', async (c) => {
 			blogs: db_response
 		})
 	}catch(error) {
-		return c.json({msg: 'internal server error', error}, 500)
+		return c.json({ msg: 'internal server error', error }, 500)
 	}
 })
 
-app.get('/api/v1/blogs/:id', async (c) => {
+app.get('/api/v1/blogs/:id', async (c: Context) => {
 	const id = c.req.param('id')
 	console.log(id)
 
@@ -61,17 +66,48 @@ app.get('/api/v1/blogs/:id', async (c) => {
 			}
 		})
 
-		if(!db_response) return c.json({msg: 'No blog with such id found'}, 404)
+		if(!db_response) return c.json({ msg: 'No blog with such id found' }, 404)
 	
-		return c.json(db_response)
+		return c.json( db_response )
 	
 	}catch(error) {
-		return c.json({msg: 'Internal Server Error', error: error}, 404)
+		return c.json({ msg: 'Internal Server Error', error: error }, 404)
+	}
+})
+
+app.patch('api/v1/blog/edit', async (c: Context) => {
+	return;
+})
+
+app.delete('/api/v1/blogs/delete', async (c: Context) => {
+	const { unique_id } = await c.req.json();
+	console.log('unique_id ' + unique_id);
+	try {
+		const db_response = await prisma.post.delete({
+			where: {
+				unique_id: unique_id
+			}
+		})
+
+		console.log(db_response)
+
+		return c.json({ msg: 'Post deleted successfully' })
+	}catch(err) {
+		return c.json({ msg: 'Something went wrong', error: err }, { status: 409 })
+	}
+})
+
+app.post('/api/v1/logout', (c: Context) => {
+	try {
+		const deletedCookie = deleteCookie(c, 'token');
+		return c.json({cookie: deletedCookie}, 200)
+	}catch(err) {
+		return c.json({ msg: 'Something went wrong', error: err }, 400);
 	}
 })
 
 
-app.post('/api/v1/signup', signupAuth, async (c) => {
+app.post('/api/v1/signup', signupAuth, async (c: Context) => {
 	const { username, email, password } = await c.req.json()
 	
 	const hashed_password: string = await bcryptjs.hash(password, 10)
@@ -91,12 +127,11 @@ app.post('/api/v1/signup', signupAuth, async (c) => {
 			email: db_response.email
 		}
 
-		const generatedToken: string = await createToken(payload);
-		console.log(generatedToken)
+		const generatedToken: string = await createToken(payload, c.env.JWT_SECRET);
+		setCookie(c, 'token', generatedToken);
 
 		return c.json({
-			msg: 'user created',
-			token: generatedToken
+			msg: 'user created'
 		})
 	}	
 	catch(error) {
@@ -108,7 +143,7 @@ app.post('/api/v1/signup', signupAuth, async (c) => {
 
 })
 
-app.post('/api/v1/signin', signinAuth, async (c) => {
+app.post('/api/v1/signin', signinAuth, async (c: Context) => {
 	const { username, password } = await c.req.json()
 
 	try {
@@ -118,14 +153,11 @@ app.post('/api/v1/signin', signinAuth, async (c) => {
 			}
 		})
 		
-		// console.log(db_response)
-		
 		if(!db_response) {
 			return c.json({ msg: 'No user found' }, 404)
 		}
 
 		const compared: boolean = await bcryptjs.compare(password, db_response.password)
-		console.log(compared)
 		if(!compared) return c.json({ msg: "Password doesn't match" }, 401)
 			
 		const payload = {
@@ -135,16 +167,16 @@ app.post('/api/v1/signin', signinAuth, async (c) => {
 		}
 
 		const generatedToken: string = await createToken(payload, c.env.JWT_SECRET)
-		console.log(generatedToken)
+		setCookie(c, 'token', generatedToken);
 			
-		return c.json({ msg: 'user logged in', token: generatedToken }, 200)
+		return c.json({ msg: 'user logged in' }, 200)
 	}
 	catch(error) {
 		return c.json({ msg: 'Internal server error', error}, 500)
 	}
 })
 
-app.post('/api/v1/blog', async (c) => {
+app.post('/api/v1/blog', async (c: Context) => {
 	const { header, body } = await c.req.json<{ header: string, body: string }>()
 	const jwt_payload = await c.get("user")
 	const user_id = jwt_payload.sub
@@ -163,7 +195,7 @@ app.post('/api/v1/blog', async (c) => {
 	return c.json({ response: db_response })
 })
 
-app.put('/api/v1/blog', async (c) => {
+app.put('/api/v1/blog', async (c: Context) => {
 	const { unique_id, header, body } = await c.req.json()
 	const jwt_payload = await c.get("user")
 	const user_id = jwt_payload.sub

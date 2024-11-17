@@ -3,9 +3,11 @@ import Home, { loader as homeLoader } from "./Pages/Home"
 import { Authenticate, action as authAction } from "./Pages/Authenticate"
 import MainNavigation from "./Pages/MainNavigation"
 import Error from "./Pages/Error"
-import Blog from "./Pages/Blog"
+import Blog, { loader as blogLoader } from "./Pages/Blog"
 import { getAuthToken } from "./lib/auth"
 import AddBlog, { action as addBlogAction } from "./Pages/AddBlog"
+import { action as logoutAction } from "./lib/logout"
+import EditPage from "./Pages/EditPage"
 
 const router = createBrowserRouter([
   {
@@ -13,6 +15,7 @@ const router = createBrowserRouter([
     element: <MainNavigation />,
     errorElement: <Error />,
     loader: getAuthToken,
+    action: logoutAction,
     children: [
       {
         index: true,
@@ -30,8 +33,23 @@ const router = createBrowserRouter([
         action: addBlogAction
       },
       {
-        path: 'blog/:id',
-        element: <Blog />
+        path: 'blog',
+        id: 'blog-detail',
+        loader: blogLoader,
+        children: [
+          {
+            path: ':id',
+            element: <Blog />,
+          },
+          {
+            path: 'edit/:id',
+            element: <EditPage />
+          }
+        ]
+      },
+      {
+        path: 'logout',
+        action: logoutAction
       }
     ]
   }

@@ -1,17 +1,49 @@
+import { useLoaderData, json, defer, Await, LoaderFunctionArgs } from "react-router-dom"
 import BlogPage from "@/components/ui/BlogPage"
-import { useParams } from "react-router-dom"
+import { Suspense } from "react";
+import { fetchWithRetry } from "@/lib/utils";
+import LoadingState from "@/components/ui/loadingState";
 
-export default function Blog() {
-    const { id } = useParams()
-
-    return <BlogPage />
+interface Blog {
+    unique_id: string,
+    header: string,
+    body: string,
+    author: string,
 }
 
-export async function loader({ request, params }) {
-    const searchedParams = new URL(request.url).searchParams;
-    const paramsId = searchedParams.get('id')
+export default function Blog() {
+    const { blog } = useLoaderData();
+    
+    return (
+        <Suspense fallback={<LoadingState />}>
+            <Await resolve={blog}>
+                {(loadedBlog: Blog) => <BlogPage blog={loadedBlog} />}
+            </Await>
+        </Suspense>
+    )
+}
 
-    const response = await fetch(`http://localhost:8787/api/v1/blog/${paramsId}`)
-    return response;
+async function loadBlog(id: string) {
+    try {
+        const response = await fetchWithRetry(`http://localhost:8787/api/v1/blogs/${id}`)
+        
+        if(!response.ok) {
+            throw json({ message: 'Blog failed to generate, refresh the page again' }, { status: 500 })
+        }
+        
+        const resData = await response.json()
+    
+        return resData;
+    }
+    catch(error) {
+        throw json({ message: 'Blog failed to generate, refresh the page again', error: error}, { status: 500 })
+    }
+}
 
+export async function loader({ params }: LoaderFunctionArgs) {
+    const paramId: string = params.id || '';
+
+    return defer({
+        blog: await loadBlog(paramId)
+    })
 }

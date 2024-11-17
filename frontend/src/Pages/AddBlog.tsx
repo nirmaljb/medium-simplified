@@ -4,7 +4,7 @@ import { ActionFunctionArgs, redirect } from "react-router-dom";
 import { z } from "zod";
 
 export default function AddBlog() {
-    return <BlogComp />
+    return <BlogComp title="" body= "" />
 }
 
 export async function action({ request }: ActionFunctionArgs) {

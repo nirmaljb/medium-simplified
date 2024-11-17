@@ -1,4 +1,4 @@
-import { Link, NavLink, useLoaderData } from "react-router-dom"
+import { Form, Link, NavLink, useLoaderData } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -14,7 +14,7 @@ import {
 
 import WritingIcon from "./ui/writeIcon"
 
-const NavItem = ({ to, children }) => (
+const NavItem = ({ to, children }: { to: string, children: React.ReactElement }) => (
     <NavLink to={to} 
         className={({ isActive }) => 
             `text-sm font-medium transition-colors drop-shadow-2xl duration-150 ${
@@ -60,11 +60,11 @@ export default function NavBar() {
                                     <DropdownMenuSeparator />
                                     <DropdownMenuGroup>
                                         <DropdownMenuItem>
-                                            Profile
+                                            My Blogs
                                             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem>
-                                            Billing
+                                            Bookmarks
                                             <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem>
@@ -78,8 +78,9 @@ export default function NavBar() {
                                     </DropdownMenuGroup>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem>
-                                        Logout
-                                        <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                                        <Form action="/logout" method="POST">
+                                            <Button variant="destructive">Logout</Button>
+                                        </Form>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                                 </DropdownMenu>
