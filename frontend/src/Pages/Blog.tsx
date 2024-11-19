@@ -1,4 +1,4 @@
-import { useLoaderData, json, defer, Await, LoaderFunctionArgs } from "react-router-dom"
+import { json, defer, Await, LoaderFunctionArgs, useRouteLoaderData } from "react-router-dom"
 import BlogPage from "@/components/ui/BlogPage"
 import { Suspense } from "react";
 import { fetchWithRetry } from "@/lib/utils";
@@ -12,7 +12,7 @@ interface Blog {
 }
 
 export default function Blog() {
-    const { blog } = useLoaderData();
+    const { blog } = useRouteLoaderData('blog-detail');
     
     return (
         <Suspense fallback={<LoadingState />}>

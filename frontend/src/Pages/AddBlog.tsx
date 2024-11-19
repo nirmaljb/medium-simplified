@@ -1,43 +1,49 @@
 import BlogComp from "@/components/ui/BlogComp";
-import { getAuthToken } from "@/lib/auth";
+import { fetchWithRetry } from "@/lib/utils";
 import { ActionFunctionArgs, redirect } from "react-router-dom";
 import { z } from "zod";
 
-export default function AddBlog() {
-    return <BlogComp title="" body= "" />
+export default function AddBlog({ title, body, method }) {
+    return <BlogComp method={method} title={title ? title: ''} body={body ? body : ''} />
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request,  params }: ActionFunctionArgs) {
     const data = await request.formData()
-    
+    const { id: unique_id } = params;
+
+    console.log(unique_id);
+
     const payload = {
         header: data.get('title') as string,
         body: data.get('body') as string
-    }
+    };
 
-    console.log(payload)
-
-    const token: string | null = getAuthToken() || null
-    
-    const schema = z.object({
-        header: z.string().min(10),
-        body: z.string()
+    const baseSchema = z.object({
+        header: z.string().min(8),
+        body: z.string().min(10)
     })
 
-    const zod_response = schema.safeParse(payload);
-    console.log(zod_response)
+    const extendedSchema = baseSchema.extend({
+        unique_id: z.string().uuid().optional()
+    })
+    
+    if(unique_id) {
+        Object.assign(payload, { unique_id })
+    }
+
+
+    const zod_response = extendedSchema.safeParse(payload);
     if(!zod_response.success) {
         return zod_response.error;
     }
-
     
-    const response = await fetch('http://localhost:8787/api/v1/blog', {
+    const response = await fetchWithRetry('http://localhost:8787/api/v1/blog', {
         method: request.method || 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        credentials: 'include'
     })
 
     if(!response.ok) {

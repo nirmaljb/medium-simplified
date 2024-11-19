@@ -26,7 +26,7 @@ const NavItem = ({ to, children }: { to: string, children: React.ReactElement })
 )
 
 export default function NavBar() {
-    const token = useLoaderData()
+    const token = 'akjfnaslfndsa';
     
     return (
         <header className="bg-[#f9f9f9f2] border-gray-200">

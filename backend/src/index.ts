@@ -75,8 +75,62 @@ app.get('/api/v1/blogs/:id', async (c: Context) => {
 	}
 })
 
-app.patch('api/v1/blog/edit', async (c: Context) => {
-	return;
+app.post('/api/v1/blog', async (c: Context) => {
+	const { header, body } = await c.req.json<{ header: string, body: string }>()
+	const jwt_payload = await c.get("user")
+	const user_id = jwt_payload.sub
+
+	//store in database under user
+	const db_response = await prisma.post.create({
+	data: {
+		header: header,
+		body: body,
+		user_id: user_id
+	}
+	})
+
+
+	//returning data
+	return c.json({ response: db_response })
+})
+
+app.patch('/api/v1/blog', async (c: Context) => {
+	const { unique_id, header, body } = await c.req.json()
+
+	console.log('payload: ', { unique_id, header, body });
+	
+	const jwt_payload = await c.get("user")
+	const user_id = jwt_payload.sub
+
+	console.log("user id: ", user_id)
+
+	//search the blog in db, and replace it
+	try {
+		const db_response = await prisma.post.updateMany({
+			where: {
+				AND: [
+					{ user_id: user_id },
+					{ unique_id: unique_id }
+				]
+			},
+			data: {
+				header: header,
+				body: body,
+				updated_at: new Date()
+			}
+		})
+
+		console.log(db_response)
+		
+		return c.json({
+			unique_id,
+			user_id,
+			header,
+			body
+		})
+	}catch(error) {
+		return c.json({msg: 'internal server error', error: 'error'}, 404)
+	}
 })
 
 app.delete('/api/v1/blogs/delete', async (c: Context) => {
@@ -176,52 +230,5 @@ app.post('/api/v1/signin', signinAuth, async (c: Context) => {
 	}
 })
 
-app.post('/api/v1/blog', async (c: Context) => {
-	const { header, body } = await c.req.json<{ header: string, body: string }>()
-	const jwt_payload = await c.get("user")
-	const user_id = jwt_payload.sub
-
-	//store in database under user
-	const db_response = await prisma.post.create({
-	data: {
-		header: header,
-		body: body,
-		user_id: user_id
-	}
-	})
-
-
-	//returning data
-	return c.json({ response: db_response })
-})
-
-app.put('/api/v1/blog', async (c: Context) => {
-	const { unique_id, header, body } = await c.req.json()
-	const jwt_payload = await c.get("user")
-	const user_id = jwt_payload.sub
-
-	//search the blog in db, and replace it
-	try {
-	const db_response = await prisma.post.update({
-		where: {
-			user_id: user_id,
-			unique_id: unique_id,
-		},
-		data: {
-			header: header,
-			body: body
-		}
-	})
-	console.log(db_response)
-	
-	return c.json({
-		unique_id,
-		header,
-		body
-	})
-	}catch(error) {
-		return c.json({msg: 'internal server error', error: 'error'}, 404)
-	}
-})
 
 export default app;

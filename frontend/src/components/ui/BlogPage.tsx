@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import DeleteAlert from "./delete-alert";
-import { Link } from "react-router-dom";
+import { json, Link, redirect, useNavigate } from "react-router-dom";
+import { fetchWithRetry } from "@/lib/utils";
 
 interface Blog {
     unique_id: string,
@@ -10,18 +11,22 @@ interface Blog {
 }
 
 export default function BlogPage({ blog }: { blog: Blog }) {
+    const navigate = useNavigate();
     async function deleteHandler() {
-        const response = await fetch('http://localhost:8787/api/v1/blogs/delete', {
+        await fetchWithRetry('http://localhost:8787/api/v1/blogs/delete', {
             method: 'DELETE',
             body: JSON.stringify({
                 unique_id: blog.unique_id,
             }),
             credentials: 'include'
+        }).then((response) => {
+            if(!response.ok) {
+                throw json({msg: 'Something went wrong', error: response}, 400)
+            }
         })
-
-        const data = await response.json()
-        console.log(data);
-        return response;
+        
+        return redirect('/');
+        // return navigate('/');
     }
     return (
         <div className="flex flex-col space-y-4 mt-10 max-w-screen-md m-auto">

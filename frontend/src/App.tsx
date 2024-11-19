@@ -15,7 +15,6 @@ const router = createBrowserRouter([
     element: <MainNavigation />,
     errorElement: <Error />,
     loader: getAuthToken,
-    action: logoutAction,
     children: [
       {
         index: true,
@@ -29,7 +28,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'create',
-        element: <AddBlog />,
+        element: <AddBlog title={""} body={""} method={""} />,
         action: addBlogAction
       },
       {
