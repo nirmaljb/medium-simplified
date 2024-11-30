@@ -20,4 +20,28 @@ A simplified version of the app [Medium](https://medium.com/) following the **CR
 ### Databases
 1. Postgresql (NeonDB)
 
+### Prerequisites
+1. Node (18.3.0+) 
+
+
+### RUN
+
+#### Frontend
+```
+cd frontend
+npm install
+npm run dev
+```
+
+#### Backend
+```
+cd frontend
+npm install
+npm run dev
+```
+
+Will create a contribution docs soon.
+
+Thank you for noticing.
+
 
