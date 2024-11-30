@@ -3,6 +3,7 @@ A simplified version of the app [Medium](https://medium.com/) following the **CR
 
 ## Features
 - Authentication (JWT Token)
+- Sigup/Signin + Logout
 - Read Post
 - Create Post
 - Update Post
@@ -10,12 +11,14 @@ A simplified version of the app [Medium](https://medium.com/) following the **CR
 
 ### Frontend
 1. React
-2. TailwindCSS
-3. Shadcn
+2. React-Router-DOM
+3. TailwindCSS
+4. Shadcn
 
 ### Backend
 1. Hono
-2. Cloudflare Workers
+2. Prisma ORM
+3. Cloudflare Workers (Wrangler)
 
 ### Databases
 1. Postgresql (NeonDB)
@@ -28,20 +31,20 @@ A simplified version of the app [Medium](https://medium.com/) following the **CR
 
 #### Frontend
 ```
-cd frontend
-npm install
-npm run dev
+1. cd frontend
+2. npm install
+3. npm run dev
 ```
 
 #### Backend
 ```
-cd frontend
-npm install
-npm run dev
+1. cd frontend
+2. npm install
+3. npm run dev
 ```
 
 Will create a contribution docs soon.
 
-Thank you for noticing.
+Thank you for visiting.
 
 
