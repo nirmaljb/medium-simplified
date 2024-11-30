@@ -1,6 +1,13 @@
 import { clsx, type ClassValue } from "clsx"
 import { json } from "react-router-dom";
 import { twMerge } from "tailwind-merge"
+import { jwtDecode } from "jwt-decode";
+
+interface Decoded {
+    sub: string;
+    username: string;
+    iat: string;
+}
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -24,4 +31,14 @@ export async function fetchWithRetry(url: string, options = {}, retries=3, backo
             throw error;
         }
     }
+};
+
+export function readToken(token: string) {
+    const payload = jwtDecode(token);
+    return payload;
+}
+
+export function getAvatarCharacters(token: string) {
+    const decoded: Decoded = readToken(token)
+    return decoded.username.substring(0,3).toUpperCase();
 }

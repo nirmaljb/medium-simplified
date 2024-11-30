@@ -55,7 +55,7 @@ export function SignupComp({ schema, error }) {
             </AlertDescription>
           </Alert>
         }
-        <RouterForm method="POST" className="space-y-4">
+        <RouterForm method="POST" className="space-y-4 w-full">
           <FormField
             control={form.control}
             name="username"

@@ -13,6 +13,9 @@ import {
   } from "@/components/ui/dropdown-menu"
 
 import WritingIcon from "./ui/writeIcon"
+import { checkToken, getToken } from "@/lib/auth"
+import { getAvatarCharacters } from "@/lib/utils"
+import { useEffect, useState } from "react"
 
 const NavItem = ({ to, children }: { to: string, children: React.ReactElement }) => (
     <NavLink to={to} 
@@ -26,7 +29,18 @@ const NavItem = ({ to, children }: { to: string, children: React.ReactElement })
 )
 
 export default function NavBar() {
-    const token = 'akjfnaslfndsa';
+
+    const [token, setToken] = useState<string | null>('');
+    
+    useEffect(() => {
+        const response: string | null = getToken();
+        setToken(response);
+    }, [])
+
+    let avatar = 'NJB';
+    if(token) {
+        avatar = getAvatarCharacters(token);
+    };
     
     return (
         <header className="bg-[#f9f9f9f2] border-gray-200">
@@ -51,8 +65,7 @@ export default function NavBar() {
                                 <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Avatar className="cursor-pointer">
-                                        <AvatarImage src="https://github.com/shadcn.jpg" />
-                                        <AvatarFallback>NJB</AvatarFallback>
+                                        <AvatarFallback>{avatar}</AvatarFallback>
                                     </Avatar>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="w-56">

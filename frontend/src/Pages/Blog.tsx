@@ -2,7 +2,7 @@ import { json, defer, Await, LoaderFunctionArgs, useRouteLoaderData } from "reac
 import BlogPage from "@/components/ui/BlogPage"
 import { Suspense } from "react";
 import { fetchWithRetry } from "@/lib/utils";
-import LoadingState from "@/components/ui/loadingState";
+import LoadingState from "@/components/ui/loading-state";
 
 interface Blog {
     unique_id: string,

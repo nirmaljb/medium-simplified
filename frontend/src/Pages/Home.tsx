@@ -1,16 +1,15 @@
-import ErrorState from "@/components/ui/errorState";
-import HomePage from "@/components/ui/HomePage";
+import ErrorState from "@/components/ui/error-state";
+import { HomePage } from "./HomePage";
 import { fetchWithRetry } from "@/lib/utils";
 import { useLoaderData, json, defer } from "react-router-dom";
+import { Blog } from "@/lib/interfaces";
 
 interface LoaderData {
-    blogs: []
+    blogs: Blog[]
 }
 
-function Home() {
+export default function Home() {
     const { blogs } = useLoaderData() as LoaderData;
-    console.log(blogs)
-
     return <HomePage blogs={blogs} errorState={<ErrorState />}/>
 }
 
@@ -28,8 +27,6 @@ async function loadBlogs() {
 
 export async function loader() {
     return defer({
-        blogs: loadBlogs()
+        blogs: await loadBlogs()
     })
 }
-
-export default Home

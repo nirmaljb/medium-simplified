@@ -1,20 +1,19 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import Home, { loader as homeLoader } from "./Pages/Home"
-import { Authenticate, action as authAction } from "./Pages/Authenticate"
-import MainNavigation from "./Pages/MainNavigation"
-import Error from "./Pages/Error"
-import Blog, { loader as blogLoader } from "./Pages/Blog"
-import { getAuthToken } from "./lib/auth"
-import AddBlog, { action as addBlogAction } from "./Pages/AddBlog"
-import { action as logoutAction } from "./lib/logout"
-import EditPage from "./Pages/EditPage"
+import Home, { loader as homeLoader } from "@/Pages/Home"
+import { Authenticate, action as authAction } from "@/Pages/Authenticate"
+import MainNavigation from "@/Pages/MainNavigation"
+import Error from "@/Pages/Error"
+import Blog, { loader as blogLoader } from "@/Pages/Blog"
+import { checkToken, getToken } from "@/lib/auth"
+import AddBlog, { action as addBlogAction } from "@/Pages/AddBlog"
+import { action as logoutAction } from "@/lib/logout"
+import EditPage from "@/Pages/EditPage"
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <MainNavigation />,
     errorElement: <Error />,
-    loader: getAuthToken,
     children: [
       {
         index: true,
@@ -43,14 +42,14 @@ const router = createBrowserRouter([
           {
             path: 'edit/:id',
             element: <EditPage />
-          }
-        ]
+          },
+        ],
       },
       {
         path: 'logout',
         action: logoutAction
       }
-    ]
+    ],
   }
 ])
 
