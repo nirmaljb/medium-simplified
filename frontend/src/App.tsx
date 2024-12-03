@@ -4,10 +4,10 @@ import { Authenticate, action as authAction } from "@/Pages/Authenticate"
 import MainNavigation from "@/Pages/MainNavigation"
 import Error from "@/Pages/Error"
 import Blog, { loader as blogLoader } from "@/Pages/Blog"
-import { checkToken, getToken } from "@/lib/auth"
 import AddBlog, { action as addBlogAction } from "@/Pages/AddBlog"
 import { action as logoutAction } from "@/lib/logout"
-import EditPage from "@/Pages/EditPage"
+
+import EditPage, { action as editAction } from "@/Pages/EditPage"
 
 const router = createBrowserRouter([
   {
@@ -27,7 +27,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'create',
-        element: <AddBlog title={""} body={""} method={""} />,
+        element: <AddBlog />,
         action: addBlogAction
       },
       {
@@ -41,7 +41,8 @@ const router = createBrowserRouter([
           },
           {
             path: 'edit/:id',
-            element: <EditPage />
+            element: <EditPage />,
+            action: editAction
           },
         ],
       },

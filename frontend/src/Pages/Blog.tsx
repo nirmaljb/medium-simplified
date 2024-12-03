@@ -3,21 +3,15 @@ import BlogPage from "@/components/ui/BlogPage"
 import { Suspense } from "react";
 import { fetchWithRetry } from "@/lib/utils";
 import LoadingState from "@/components/ui/loading-state";
-
-interface Blog {
-    unique_id: string,
-    header: string,
-    body: string,
-    author: string,
-}
+import { Blog as blogProps } from "@/lib/interfaces";
 
 export default function Blog() {
-    const { blog } = useRouteLoaderData('blog-detail');
+    const { blog } = useRouteLoaderData('blog-detail') as blogProps;
     
     return (
         <Suspense fallback={<LoadingState />}>
             <Await resolve={blog}>
-                {(loadedBlog: Blog) => <BlogPage blog={loadedBlog} />}
+                {(loadedBlog: blogProps) => <BlogPage blog={loadedBlog} />}
             </Await>
         </Suspense>
     )

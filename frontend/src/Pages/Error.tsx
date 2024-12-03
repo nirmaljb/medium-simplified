@@ -1,4 +1,4 @@
-import { useRouteError } from "react-router-dom"
+import { ErrorResponse, useRouteError } from "react-router-dom"
 import MainNavigation from "./MainNavigation";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
  
@@ -18,7 +18,7 @@ interface ErrorType {
 }
 
 export default function Error() {
-    const error: ErrorType = useRouteError()
+    const error = useRouteError() as ErrorType;
     console.log(error);
     let message = 'Something went wrong!';
 

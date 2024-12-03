@@ -16,10 +16,18 @@ app.get('/token', (c) => {
 	return c.json({ token1: c.env.JWT_SECRET, token2: c.env.DATABASE_URL});
 })
 
-app.use('/api/*', cors({
-	origin: 'http://localhost:5173',
-	credentials: true,
+app.use('*', cors({
+    origin: 'http://localhost:5173',
+    allowHeaders: ['Content-Type', 'Authorization'],
+    allowMethods: ['POST', 'GET', 'OPTIONS', 'PATCH', 'DELETE'],
+    exposeHeaders: ['Content-Length'],
+    maxAge: 600,
+    credentials: true,
 }))
+
+app.options('*', (c) => {
+    return c.text('', 204)
+})
 
 app.use('/api/v1/blogs/delete', tokenAuth)
 app.use('/api/v1/blog/*', tokenAuth, inputValidation)

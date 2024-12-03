@@ -3,36 +3,26 @@ import { fetchWithRetry } from "@/lib/utils";
 import { ActionFunctionArgs, redirect } from "react-router-dom";
 import { z } from "zod";
 
-export default function AddBlog({ title, body, method }) {
-    return <BlogComp method={method} title={title ? title: ''} body={body ? body : ''} />
+const AddBlog: React.FC =() => {
+    return <BlogComp method="POST" title="" body="" />
 }
 
-export async function action({ request,  params }: ActionFunctionArgs) {
-    const data = await request.formData()
-    const { id: unique_id } = params;
+export default AddBlog;
 
-    console.log(unique_id);
+export async function action({ request }: ActionFunctionArgs) {
+    const data = await request.formData();
 
     const payload = {
         header: data.get('title') as string,
         body: data.get('body') as string
     };
 
-    const baseSchema = z.object({
+    const Schema = z.object({
         header: z.string().min(8),
         body: z.string().min(10)
     })
 
-    const extendedSchema = baseSchema.extend({
-        unique_id: z.string().uuid().optional()
-    })
-    
-    if(unique_id) {
-        Object.assign(payload, { unique_id })
-    }
-
-
-    const zod_response = extendedSchema.safeParse(payload);
+    const zod_response = Schema.safeParse(payload);
     if(!zod_response.success) {
         return zod_response.error;
     }

@@ -1,5 +1,5 @@
+import LoadingComp from "@/components/ui/loading-state";
 import { UserCard } from "@/components/ui/UserCard"
-import { getToken } from "@/lib/auth";
 import { Blog } from "@/lib/interfaces"
 
 interface Props {

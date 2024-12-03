@@ -5,9 +5,13 @@ import { fetchWithRetry } from "@/lib/utils";
 import { Blog } from "@/lib/interfaces";
 import { getToken } from "@/lib/auth";
 
+interface BlogProp {
+    blog: Blog
+}
 
-export default function BlogPage({ blog }: { blog: Blog }) {
-    
+
+const BlogPage: React.FC<BlogProp> = ({ blog }) => {
+
     async function deleteHandler() {
         await fetchWithRetry('http://localhost:8787/api/v1/delete', {
             method: 'DELETE',
@@ -41,3 +45,5 @@ export default function BlogPage({ blog }: { blog: Blog }) {
         </div>
     )
 }
+
+export default BlogPage;
