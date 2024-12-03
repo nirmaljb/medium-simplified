@@ -11,10 +11,17 @@ const BlogComp: React.FC<BlogProps> = ({ id, title, body, method }) => {
     const navigation = useNavigation();
     const isSubmitting = navigation.state === 'submitting';
 
+    let path = '';
+    if(method === 'PATCH') {
+        path = `/blog/edit/${id}`
+    }else {
+        path = '/create'
+    }
+
     return (
         <div className="max-w-screen-md mx-auto space-y-9 mt-10">
             <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-5xl font-serif">write that story</h1>
-            <Form method={method} action={`/blog/edit/${id}`} className="grid w-full max-w-screen-md items-center gap-1.5 space-y-5">
+            <Form method={method} action={path} className="grid w-full max-w-screen-md items-center gap-1.5 space-y-5">
                 <div>
                     <Label htmlFor="title">Your Heading</Label>
                     <Input name="title" placeholder="Title" defaultValue={title ? title: ''}/>
