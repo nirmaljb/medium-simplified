@@ -1,4 +1,3 @@
-import LoadingComp from "@/components/ui/loading-state";
 import { UserCard } from "@/components/ui/UserCard"
 import { Blog } from "@/lib/interfaces"
 
@@ -12,6 +11,7 @@ export const HomePage: React.FC<Props> = ({ blogs, errorState }) => {
             {blogs.map((blog: Blog) => (
                 <UserCard key={blog.unique_id} id={blog.unique_id} header={blog.header} body={blog.body} author={blog.user.username} />
             ))}
+            {errorState}
         </div>
     )
 }

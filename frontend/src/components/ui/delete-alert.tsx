@@ -32,7 +32,7 @@ const DeleteAlert: React.FC<Props> = ({ handler }) => {
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction asChild>
-                        <Button variant="destructive" onClick={handler}>Delete</Button>
+                        <Button variant={"destructive"} onClick={handler}>Delete</Button>
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

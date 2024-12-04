@@ -13,7 +13,6 @@ export interface Blog {
 }
 
 export interface BlogProps {
-    id?: string,
     title: string,
     body: string,
     method: "POST" | "GET" | "PUT" | "PATCH"

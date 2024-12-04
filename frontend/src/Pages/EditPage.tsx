@@ -6,7 +6,7 @@ import { z } from "zod";
 const EditPage: React.FC = () => {
     const { blog: BlogContent }: any = useRouteLoaderData('blog-detail');
 
-    return <BlogComp id={BlogContent.unique_id} method="PATCH" title={BlogContent.header} body={BlogContent.body} />
+    return <BlogComp method="PATCH" title={BlogContent.header} body={BlogContent.body} />
 };
 
 export default EditPage;

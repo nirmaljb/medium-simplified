@@ -8,7 +8,6 @@ import AddBlog, { action as addBlogAction } from "@/Pages/AddBlog"
 import { action as logoutAction } from "@/lib/logout"
 
 import EditPage, { action as editAction } from "@/Pages/EditPage"
-
 const router = createBrowserRouter([
   {
     path: '/',
