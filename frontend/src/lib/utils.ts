@@ -39,6 +39,6 @@ export function readToken(token: string) {
 }
 
 export function getAvatarCharacters(token: string) {
-    const decoded: Decoded = readToken(token)
+    const decoded: Decoded = readToken(token);
     return decoded.username.substring(0,3).toUpperCase();
 }

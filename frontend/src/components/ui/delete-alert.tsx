@@ -10,6 +10,7 @@ import {
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
 import { Button } from "./button"
+import { MdOutlineDelete } from "react-icons/md";
 
 interface Props {
     handler: () => void
@@ -19,7 +20,7 @@ const DeleteAlert: React.FC<Props> = ({ handler }) => {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="destructive">Delete</Button>
+                <Button variant="destructive">Delete <MdOutlineDelete /></Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
@@ -32,7 +33,7 @@ const DeleteAlert: React.FC<Props> = ({ handler }) => {
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction asChild>
-                        <Button variant={"destructive"} onClick={handler}>Delete</Button>
+                        <Button variant="destructive" onClick={handler}>Delete</Button>
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

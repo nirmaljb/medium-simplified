@@ -2,14 +2,13 @@ import { ActionFunctionArgs, json, redirect, useRouteLoaderData } from "react-ro
 import BlogComp from "@/components/ui/BlogComp";
 import { fetchWithRetry } from "@/lib/utils";
 import { z } from "zod";
+import { Blog } from "@/lib/interfaces";
 
 const EditPage: React.FC = () => {
-    const { blog: BlogContent }: any = useRouteLoaderData('blog-detail');
+    const { blog } = useRouteLoaderData('blog-detail') as { blog: Blog };
 
-    return <BlogComp method="PATCH" title={BlogContent.header} body={BlogContent.body} />
+    return <BlogComp method="PATCH" title={blog.header} body={blog.body} heading="edit that story"/>
 };
-
-export default EditPage;
 
 export async function action({ request, params }: ActionFunctionArgs) {
     const data = await request.formData();
@@ -49,6 +48,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }catch(error) {
         return json({msg: 'Something went wrong, check console', error: error});
     }
-
-
 } 
+
+export default EditPage;

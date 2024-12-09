@@ -15,6 +15,7 @@ export interface Blog {
 export interface BlogProps {
     title: string,
     body: string,
+    heading: string,
     method: "POST" | "GET" | "PUT" | "PATCH"
 }
 

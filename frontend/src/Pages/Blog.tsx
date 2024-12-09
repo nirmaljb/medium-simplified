@@ -6,7 +6,7 @@ import LoadingState from "@/components/ui/loading-state";
 import { Blog as blogProps } from "@/lib/interfaces";
 
 export default function Blog() {
-    const { blog } = useRouteLoaderData('blog-detail') as blogProps;
+    const { blog } = useRouteLoaderData('blog-detail') as { blog: blogProps };
     
     return (
         <Suspense fallback={<LoadingState />}>
@@ -38,6 +38,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
     const paramId: string = params.id || '';
 
     return defer({
-        blog: await loadBlog(paramId)
+        blog: loadBlog(paramId)
     })
 }

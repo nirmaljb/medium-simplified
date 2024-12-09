@@ -20,9 +20,10 @@ const pool = new Pool({ connectionString })
 const adapter = new PrismaNeon(pool)
 const prisma = new PrismaClient({ adapter })
 
-authRouter.post('/logout', async (c: Context) => {
+authRouter.post('/logout', (c: Context) => {
 	try {
 		const returnedCookie = deleteCookie(c, 'token');
+		console.log(returnedCookie);
 		return c.json({message: 'User logged out', cookie: returnedCookie}, 200)
 	}catch(err) {
 		return c.json({ msg: 'Something went wrong', error: err }, 400);

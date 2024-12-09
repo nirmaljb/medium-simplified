@@ -1,10 +1,11 @@
 import BlogComp from "@/components/ui/BlogComp";
 import { fetchWithRetry } from "@/lib/utils";
 import { ActionFunctionArgs, redirect } from "react-router-dom";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const AddBlog: React.FC =() => {
-    return <BlogComp method="POST" title="" body="" />
+    return <BlogComp method="POST" title="" body="" heading="write that story"/>
 }
 
 export default AddBlog;
@@ -26,6 +27,8 @@ export async function action({ request }: ActionFunctionArgs) {
     if(!zod_response.success) {
         return zod_response.error;
     }
+
+    const promise =  () => new Promise((resolve) => setTimeout(() => resolve({ name: 'Blog' }), 1000));
     
     const response = await fetchWithRetry('http://localhost:8787/api/v1/blog', {
         method: request.method || 'POST',
@@ -36,9 +39,18 @@ export async function action({ request }: ActionFunctionArgs) {
         credentials: 'include'
     })
 
+    toast.promise(promise, {
+        loading: 'Loading...',
+        success: (data: { name: string}) => {
+          return `New ${data.name} has been added`;
+        },
+        error: 'Error',
+    });
+
     if(!response.ok) {
         return response;
     }
 
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     return redirect('/')
 } 

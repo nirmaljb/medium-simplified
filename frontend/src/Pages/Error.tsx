@@ -1,4 +1,4 @@
-import { ErrorResponse, useRouteError } from "react-router-dom"
+import { useRouteError } from "react-router-dom"
 import MainNavigation from "./MainNavigation";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
  

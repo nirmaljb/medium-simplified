@@ -2,7 +2,7 @@ import { json, redirect } from "react-router-dom";
 import { fetchWithRetry } from "./utils";
 export const action = async () => {
     try {
-        await fetchWithRetry('http://localhost:8787/api/v1/logout', {
+        await fetchWithRetry('http://localhost:8787/api/v1/auth/logout', {
             method: 'POST',
         })
         return redirect("/");

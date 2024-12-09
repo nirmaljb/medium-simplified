@@ -1,3 +1,3 @@
 export default function ErrorState() {
-    return <h1>Error Occured</h1>
+    return <h1>What happened?</h1>
 }

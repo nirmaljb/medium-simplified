@@ -11,11 +11,13 @@ import {
     DropdownMenuTrigger,
     DropdownMenuGroup,
   } from "@/components/ui/dropdown-menu"
-
+  
+import { json, redirect } from "react-router-dom";
 import WritingIcon from "./ui/writeIcon"
-import { checkToken, getToken } from "@/lib/auth"
+import { getToken } from "@/lib/auth"
 import { getAvatarCharacters } from "@/lib/utils"
 import { useEffect, useState } from "react"
+import { fetchWithRetry } from "@/lib/utils";
 
 const NavItem = ({ to, children }: { to: string, children: React.ReactElement }) => (
     <NavLink to={to} 
@@ -28,19 +30,33 @@ const NavItem = ({ to, children }: { to: string, children: React.ReactElement })
     </NavLink>
 )
 
+const logoutHandler = async () => {
+    try {
+        await fetchWithRetry('http://localhost:8787/api/v1/logout', {
+            method: 'POST',
+        })
+        return redirect("/");
+    }catch(err) {
+        return json({message: 'Something went wrong during logout', error: err});
+    }
+}
+
 export default function NavBar() {
 
     const [token, setToken] = useState<string | null>('');
-    
+    const [avatar, setAvatar] = useState<string>('NJB');
+
     useEffect(() => {
         const response: string | null = getToken();
         setToken(response);
     }, [])
 
-    let avatar = 'NJB';
-    if(token) {
-        avatar = getAvatarCharacters(token);
-    };
+    useEffect(() => {
+        if(token) {
+            setAvatar(getAvatarCharacters(token));
+        }
+    }, [token])
+    
     
     return (
         <header className="bg-[#f9f9f9f2] border-gray-200">
@@ -65,6 +81,7 @@ export default function NavBar() {
                                 <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Avatar className="cursor-pointer">
+                                        <AvatarImage src="https://avatar.iran.liara.run/public/boy" />
                                         <AvatarFallback>{avatar}</AvatarFallback>
                                     </Avatar>
                                 </DropdownMenuTrigger>
@@ -91,9 +108,7 @@ export default function NavBar() {
                                     </DropdownMenuGroup>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem>
-                                        <Form action="/logout" method="POST">
-                                            <Button variant="destructive">Logout</Button>
-                                        </Form>
+                                        <Button variant="destructive" onClick={logoutHandler}>Logout</Button>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                                 </DropdownMenu>
