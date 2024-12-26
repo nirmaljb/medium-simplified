@@ -22,9 +22,8 @@ const prisma = new PrismaClient({ adapter })
 
 authRouter.post('/logout', (c: Context) => {
 	try {
-		const returnedCookie = deleteCookie(c, 'token');
-		console.log(returnedCookie);
-		return c.json({message: 'User logged out', cookie: returnedCookie}, 200)
+		deleteCookie(c, 'token');
+		return c.json({message: 'User logged out'}, 200)
 	}catch(err) {
 		return c.json({ msg: 'Something went wrong', error: err }, 400);
 	}
@@ -35,27 +34,41 @@ authRouter.post('/signup', signupAuth, async (c: Context) => {
 	const { username, email, password } = await c.req.json()
 	
 	const hashed_password: string = await bcryptjs.hash(password, 10)
+	const avatarId: number = Math.floor(Math.random() * (100 - 1 + 1) + 1); //generating a random number between 1-100
 
 	try {
 		const db_response = await prisma.user.create({
 			data: {
 				username: username,
 				email: email,
-				password: hashed_password
+				password: hashed_password,
+				avatar: `https://avatar.iran.liara.run/public/${avatarId}`
 			}
 		})
 
 		const payload = {
 			sub: db_response.unique_id,
 			username: db_response.username,
-			email: db_response.email
+			email: db_response.email,
+		}
+
+		const returnedPayload = {
+			username: db_response.username,
+			avatar: db_response.avatar
 		}
 
 		const generatedToken: string = await createToken(payload, c.env.JWT_SECRET);
-		setCookie(c, 'token', generatedToken);
+		setCookie(c, 'token', generatedToken, {
+			maxAge: 7 * 24 * 60 * 60,
+			path: '/',
+			secure: true,
+			httpOnly: true,
+			sameSite: 'Lax'
+		});
 
 		return c.json({
-			msg: 'user created'
+			payload: returnedPayload,
+			msg: 'user created',
 		})
 	}	
 	catch(error) {
@@ -77,7 +90,10 @@ authRouter.post('/signin', signinAuth, async (c: Context) => {
 			}
 		})
 
-        console.log(db_response);
+        const returnedPayload = {
+			username: db_response?.username,
+			avatar: db_response?.avatar
+		}
 
 		if(!db_response) {
 			return c.json({ msg: 'No user found' }, 404)
@@ -89,15 +105,21 @@ authRouter.post('/signin', signinAuth, async (c: Context) => {
 		const payload = {
 			sub: db_response.unique_id,
 			username: db_response.username,
-			email: db_response.email
+			email: db_response.email,
+			avatar: db_response.avatar
 		}
         
-        // console.log(c.env.JWT_SECRET);
 		const generatedToken: string = await createToken(payload, c.env.JWT_SECRET)
-        console.log(generatedToken);
-		setCookie(c, 'token', generatedToken);
+
+		setCookie(c, 'token', generatedToken, {
+			maxAge: 7 * 24 * 60 * 60,
+			path: '/',
+			secure: true,
+			sameSite: 'Lax',
+			httpOnly: true
+		});
 			
-		return c.json({ msg: 'user logged in' }, 200)
+		return c.json({ msg: 'user logged in', payload: returnedPayload }, 200)
 	}
 	catch(error) {
 		return c.json({ msg: 'Internal server error', error: error}, 500)

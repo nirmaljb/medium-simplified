@@ -32,7 +32,7 @@ export async function action({ request }: LoaderFunctionArgs) {
     const authData: AuthData = {
         username: data.get('username') as string,
         email: data.get('email') as string | '',
-        password: data.get('password') as string
+        password: data.get('password') as string,
     }
     console.log(JSON.stringify(authData))
 
@@ -46,13 +46,12 @@ export async function action({ request }: LoaderFunctionArgs) {
     : z.object({...baseZodObject})
 
     const inputStatus = zodObject.safeParse(authData)
-    console.log(inputStatus)
 
     if(!inputStatus.success) {
         return inputStatus.error;
     }
     
-    const response = await fetch(`http://localhost:8787/api/v1/${mode}`, {
+    const response = await fetch(`http://localhost:8787/api/v1/auth/${mode}`, {
         method: request.method,
         headers: {
             'Content-Type': 'application/json'
@@ -61,6 +60,8 @@ export async function action({ request }: LoaderFunctionArgs) {
         body: JSON.stringify(authData)
     })
 
+    const resData = await response.json()
+
     if(!response.ok) {
         return response;
     }
@@ -68,10 +69,9 @@ export async function action({ request }: LoaderFunctionArgs) {
     if(response.status === 500) {
         return json({ msg: 'Internal Server Error' }, { status: 500 })
     }
-    
-    const res = await response.json();
-    const token = res.token;
-    localStorage.setItem('token', token)
 
+    localStorage.setItem("username", resData.payload.username)
+    localStorage.setItem("avatar", resData.payload.avatar)
+    
     return redirect("/")
 } 

@@ -4,6 +4,7 @@ import { inputValidation } from './middlewares/inputValidation'
 import { cors } from "hono/cors"
 import blogRouter from './router/blog'
 import authRouter from './router/auth'
+import { UserAuth } from './middlewares/userAuth'
 
 type Bindings = {
 	JWT_SECRET: string,
@@ -11,6 +12,10 @@ type Bindings = {
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
+const token = {
+    JWT_SECRET: '',
+    DATABASE_URL: '',
+}
 
 app.get('/token', (c) => {
 	return c.json({ token1: c.env.JWT_SECRET, token2: c.env.DATABASE_URL});
@@ -29,11 +34,17 @@ app.options('*', (c) => {
     return c.text('', 204)
 })
 
+app.use('*', UserAuth);
+
 app.use('/api/v1/blogs/delete', tokenAuth)
 app.use('/api/v1/blog/*', tokenAuth, inputValidation)
 
 app.route('/api/v1', blogRouter);
-app.route('/api/v1', authRouter);
+app.route('/api/v1/auth', authRouter);
 
 
 export default app;
+
+//site key -> 6LdgP6MqAAAAAPF5NC7ON39QXCiQMaHq2ZgmR-Xp
+//secret key -> 6LdgP6MqAAAAAAoIBXNvgasw4jxJfYTbHQMrPrS_
+

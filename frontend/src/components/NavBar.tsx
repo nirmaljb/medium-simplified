@@ -1,4 +1,4 @@
-import { Form, Link, NavLink, useLoaderData } from "react-router-dom"
+import { Link, LoaderFunctionArgs, NavLink, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -12,14 +12,13 @@ import {
     DropdownMenuGroup,
   } from "@/components/ui/dropdown-menu"
   
-import { json, redirect } from "react-router-dom";
 import WritingIcon from "./ui/writeIcon"
 import { getToken } from "@/lib/auth"
 import { getAvatarCharacters } from "@/lib/utils"
 import { useEffect, useState } from "react"
-import { fetchWithRetry } from "@/lib/utils";
+import { logout } from "@/lib/logout";
 
-const NavItem = ({ to, children }: { to: string, children: React.ReactElement }) => (
+const NavItem = ({ to, children }: { to: string, children: string }) => (
     <NavLink to={to} 
         className={({ isActive }) => 
             `text-sm font-medium transition-colors drop-shadow-2xl duration-150 ${
@@ -30,32 +29,19 @@ const NavItem = ({ to, children }: { to: string, children: React.ReactElement })
     </NavLink>
 )
 
-const logoutHandler = async () => {
-    try {
-        await fetchWithRetry('http://localhost:8787/api/v1/logout', {
-            method: 'POST',
-        })
-        return redirect("/");
-    }catch(err) {
-        return json({message: 'Something went wrong during logout', error: err});
-    }
-}
 
 export default function NavBar() {
+    const navigate = useNavigate();
 
-    const [token, setToken] = useState<string | null>('');
+    
+    const logoutHandler = async () => {
+        await logout();
+        navigate("/");
+    }   
+    
+    const [token, setToken] = useState<string | null>('asfsfas');
     const [avatar, setAvatar] = useState<string>('NJB');
-
-    useEffect(() => {
-        const response: string | null = getToken();
-        setToken(response);
-    }, [])
-
-    useEffect(() => {
-        if(token) {
-            setAvatar(getAvatarCharacters(token));
-        }
-    }, [token])
+    const [avatarIcon, setAvatarIcon] = useState<string>('');
     
     
     return (
@@ -67,7 +53,7 @@ export default function NavBar() {
                     </div>
                     <nav>
                         <ul className="flex space-x-6 items-center">
-                            {!token ? (
+                            {token?.length === 0 ? (
                                 <li>
                                     <NavItem to="auth">Login</NavItem>
                                 </li>
@@ -81,7 +67,7 @@ export default function NavBar() {
                                 <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Avatar className="cursor-pointer">
-                                        <AvatarImage src="https://avatar.iran.liara.run/public/boy" />
+                                        <AvatarImage src={avatarIcon} />
                                         <AvatarFallback>{avatar}</AvatarFallback>
                                     </Avatar>
                                 </DropdownMenuTrigger>

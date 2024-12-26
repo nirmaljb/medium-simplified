@@ -7,6 +7,7 @@ interface Decoded {
     sub: string;
     username: string;
     iat: string;
+    avatarId: string
 }
 
 export function cn(...inputs: ClassValue[]) {
@@ -21,6 +22,11 @@ export async function fetchWithRetry(url: string, options = {}, retries=3, backo
         if(!response.ok) {
             throw json({ msg: 'Could not fetch data' }, { status: 500 })
         }
+
+        // if(response.status === 401) {
+        //     return new Error('User is not authorized.')
+        // }
+        
         return response;
     }
     catch(error) {
@@ -36,6 +42,11 @@ export async function fetchWithRetry(url: string, options = {}, retries=3, backo
 export function readToken(token: string) {
     const payload = jwtDecode(token);
     return payload;
+}
+
+export function getAvatarIcon(token: string) {
+    const { avatarId } = readToken(token);
+    return avatarId
 }
 
 export function getAvatarCharacters(token: string) {

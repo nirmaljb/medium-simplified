@@ -1,11 +1,15 @@
-import { json, redirect } from "react-router-dom";
-import { fetchWithRetry } from "./utils";
-export const action = async () => {
+import { json } from "react-router-dom";
+export const logout = async () => {
     try {
-        await fetchWithRetry('http://localhost:8787/api/v1/auth/logout', {
+        const response = await fetch('http://localhost:8787/api/v1/auth/logout', {
             method: 'POST',
+            credentials: 'include'
         })
-        return redirect("/");
+
+        localStorage.removeItem('username')
+        localStorage.removeItem('avatar')
+
+        return response;
     }catch(err) {
         return json({message: 'Something went wrong during logout', error: err});
     }

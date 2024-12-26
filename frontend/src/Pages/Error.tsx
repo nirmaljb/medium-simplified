@@ -29,6 +29,10 @@ export default function Error() {
     if (error.status === 404) {
         message = 'Could not find resource or page.';
     }
+
+    if (error.status === 401) {
+        message = 'User is not authorized.'
+    }
     return (
         <>
             <MainNavigation />

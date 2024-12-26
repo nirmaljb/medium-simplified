@@ -23,6 +23,7 @@ model User {
   post Post[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt @default(now())
+  avatar String @unique
 }
 
 model Post {

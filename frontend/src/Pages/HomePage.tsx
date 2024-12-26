@@ -11,7 +11,7 @@ export const HomePage: React.FC<Props> = ({ blogs, errorState }) => {
             {blogs.map((blog: Blog) => (
                 <UserCard key={blog.unique_id} blog={blog} />
             ))}
-            {errorState}
+            {(!blogs || blogs.length === 0) && errorState}
         </div>
     )
 }

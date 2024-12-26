@@ -50,7 +50,7 @@ export const SigninComp: React.FC = ({ form, error }) => {
                         <FormItem>
                         <FormLabel>Username</FormLabel>
                         <FormControl>
-                        <Input placeholder="kaizen" {...field} required minLength={5}/>
+                        <Input placeholder="kaizen" {...field} required minLength={5} autoComplete="new-password"/>
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -63,7 +63,7 @@ export const SigninComp: React.FC = ({ form, error }) => {
                         <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                        <Input placeholder="*******" {...field} type="password" required minLength={8} />
+                        <Input placeholder="*******" {...field} type="password" required minLength={8} autoComplete="off"/>
                         </FormControl>
                         <FormMessage />
                     </FormItem>

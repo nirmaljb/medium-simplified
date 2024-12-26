@@ -63,7 +63,7 @@ export function SignupComp({ schema, error }) {
               <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <Input placeholder="kaizen" {...field} required minLength={5}/>
+                  <Input placeholder="kaizen" {...field} required minLength={5} />
                 </FormControl>
                   <FormDescription>
                   This is your public display name.
