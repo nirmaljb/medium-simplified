@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "scripts": {
-    "dev": "wrangler dev src/index.ts",
+    "dev": "wrangler dev --ip 0.0.0.0 src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts",
     "env": "dotenv -e .dev.vars"
   },

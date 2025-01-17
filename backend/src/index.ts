@@ -34,7 +34,7 @@ app.options('*', (c) => {
     return c.text('', 204)
 })
 
-app.use('*', UserAuth);
+// app.use('*', UserAuth);
 
 app.use('/api/v1/blogs/delete', tokenAuth)
 app.use('/api/v1/blog/*', tokenAuth, inputValidation)
@@ -44,7 +44,3 @@ app.route('/api/v1/auth', authRouter);
 
 
 export default app;
-
-//site key -> 6LdgP6MqAAAAAPF5NC7ON39QXCiQMaHq2ZgmR-Xp
-//secret key -> 6LdgP6MqAAAAAAoIBXNvgasw4jxJfYTbHQMrPrS_
-

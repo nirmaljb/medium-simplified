@@ -12,7 +12,6 @@ const BlogComp: React.FC<BlogProps> = ({ title, body, method, heading }) => {
     const isSubmitting = navigation.state === 'submitting';
     const { id }= useParams();
 
-
     let path = '';
     if(method === 'PATCH') {
         path = `/blog/edit/${id}`

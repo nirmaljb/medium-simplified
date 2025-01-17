@@ -1,4 +1,4 @@
-import { Link, LoaderFunctionArgs, NavLink, useNavigate } from "react-router-dom"
+import { Link, NavLink, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -13,9 +13,7 @@ import {
   } from "@/components/ui/dropdown-menu"
   
 import WritingIcon from "./ui/writeIcon"
-import { getToken } from "@/lib/auth"
-import { getAvatarCharacters } from "@/lib/utils"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { logout } from "@/lib/logout";
 
 const NavItem = ({ to, children }: { to: string, children: string }) => (
@@ -39,7 +37,7 @@ export default function NavBar() {
         navigate("/");
     }   
     
-    const [token, setToken] = useState<string | null>('asfsfas');
+    const [token, setToken] = useState<string | null>();
     const [avatar, setAvatar] = useState<string>('NJB');
     const [avatarIcon, setAvatarIcon] = useState<string>('');
     

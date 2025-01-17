@@ -20,11 +20,12 @@ interface ErrorType {
 export default function Error() {
     const error = useRouteError() as ErrorType;
     console.log(error);
-    let message = 'Something went wrong!';
 
-    if (error.status === 500) {
-        message = error.data.message;
-    }
+    let message = "We've encountered an error";
+
+    // if (error.status === 500) {
+    //     message = error.data.message;
+    // }
 
     if (error.status === 404) {
         message = 'Could not find resource or page.';
@@ -38,9 +39,9 @@ export default function Error() {
             <MainNavigation />
             <Alert variant="destructive" className="max-w-screen-sm md:max-w-screen-md mx-auto min-h-fit">
                 <ExclamationTriangleIcon className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>
-                    {message}
+                    <AlertTitle className="text-xl">Error</AlertTitle>
+                    <AlertDescription>
+                        {message}
                 </AlertDescription>
             </Alert>
         </>
