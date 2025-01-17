@@ -39,6 +39,14 @@ A simplified version of the app [Medium](https://medium.com/) following the **CR
 ```
 
 #### Backend
+
+***Docker***
+```
+1. cd backend
+2. docker build -t medium-backend .
+3. docker run -p 8787:8787 medium-backend
+```
+
 ```
 1. cd frontend
 2. npm install
