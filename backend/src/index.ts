@@ -1,10 +1,11 @@
-import { Hono } from 'hono'
+import { Context, Hono } from 'hono'
 import { tokenAuth } from './middlewares/tokenAuth'
 import { inputValidation } from './middlewares/inputValidation'
 import { cors } from "hono/cors"
 import blogRouter from './router/blog'
 import authRouter from './router/auth'
 import { UserAuth } from './middlewares/userAuth'
+import { getCookie } from 'hono/cookie'
 
 type Bindings = {
 	JWT_SECRET: string,
@@ -38,6 +39,14 @@ app.options('*', (c) => {
 
 app.use('/api/v1/blogs/delete', tokenAuth)
 app.use('/api/v1/blog/*', tokenAuth, inputValidation)
+
+app.get('/', UserAuth, (c: Context) => {
+    const token = getCookie(c, 'token');
+        if(!token) {
+            return c.json({ message: 'User not authorized'}, 401);
+        }   
+    return c.json({ message: 'User maybe logged in' })
+})
 
 app.route('/api/v1', blogRouter);
 app.route('/api/v1/auth', authRouter);

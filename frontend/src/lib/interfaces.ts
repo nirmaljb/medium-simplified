@@ -16,15 +16,31 @@ export interface BlogProps {
     title: string,
     body: string,
     heading: string,
-    method: "POST" | "GET" | "PUT" | "PATCH"
+    method: "POST" | "GET" | "PUT" | "PATCH",
+    submitHandler: () => Promise<void>,
 }
 
-export const formSchema = z.object({
-    email: z.string().email(),
-    username: z.string().min(5),
-    password: z.string().min(8)
+// export interface User {
+
+// }
+
+export interface Blog {
+    header: string,
+    body: string
+}
+
+export interface BlogObject {
+    values: Blog,
+    path: string,
+}
+
+export const formSchemaBlog = z.object({
+    header: z.string().min(10, {
+        message: 'Heading must be at least 10 characters.'
+    }).max(50, {
+        message: 'Username can at most be 50 characters.'
+    }),
+    body: z.string().min(10, {
+        message: 'Body must be at least 10 characters.'
+    })
 });
-
-export interface User {
-
-}

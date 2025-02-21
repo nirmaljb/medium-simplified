@@ -7,6 +7,7 @@ import Blog, { loader as blogLoader } from "@/Pages/Blog"
 import AddBlog, { action as addBlogAction } from "@/Pages/AddBlog"
 
 import EditPage, { action as editAction } from "@/Pages/EditPage"
+import AuthProvider from "./components/store/AuthProvider"
 
 const router = createBrowserRouter([
   {
@@ -16,7 +17,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <AuthProvider><Home /></AuthProvider>,
         loader: homeLoader
       },
       {
@@ -26,7 +27,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'create',
-        element: <AddBlog />,
+        element: <AuthProvider><AddBlog /></AuthProvider>,
         action: addBlogAction
       },
       {
@@ -40,7 +41,7 @@ const router = createBrowserRouter([
           },
           {
             path: 'edit/:id',
-            element: <EditPage />,
+            element: <AuthProvider><EditPage /></AuthProvider>,
             action: editAction
           },
         ],

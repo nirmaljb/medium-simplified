@@ -1,14 +1,36 @@
 import BlogComp from "@/components/ui/BlogComp";
-import { fetchWithRetry } from "@/lib/utils";
-import { ActionFunctionArgs, redirect } from "react-router-dom";
+import { BlogObject } from "@/lib/interfaces";
+import { fetchWithRetry, submitEvent } from "@/lib/utils";
+import { ActionFunctionArgs, redirect, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
 const AddBlog: React.FC =() => {
-    return <BlogComp method="POST" title="" body="" heading="write that story"/>
+    return <BlogComp method="POST" title="" body="" heading="write that story" submitHandler={submitHandler}/>
 }
 
 export default AddBlog;
+
+const submitHandler = async (obj) => {
+    const values = obj[0];
+    const path = obj[1];
+
+    console.log(obj);
+
+    const promise =  () => new Promise((resolve) => setTimeout(() => resolve({ name: 'blog' }), 1000));
+
+    await submitEvent(values, 'POST', path)
+
+    toast.promise(promise, {
+        loading: 'Loading...',
+        success: (data: { name: string }) => {
+          return `Your ${data.name} has been added`;
+        },
+        error: 'Error',
+    });
+    await new Promise((resolve) => setTimeout(resolve, 2000)).then(() => redirect("/"));
+    // return redirect("/")
+}
 
 export async function action({ request }: ActionFunctionArgs) {
     const data = await request.formData();

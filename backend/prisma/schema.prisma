@@ -29,7 +29,7 @@ model User {
 model Post {
   serial_id Int @default(autoincrement())
   unique_id String @id @default(uuid())
-  header String
+  heading String
   body String
   user User @relation(fields: [user_id], references: [unique_id])
   user_id String
